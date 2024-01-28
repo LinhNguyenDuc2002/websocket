@@ -1,6 +1,6 @@
-package com.example.websockets.config;
+package com.example.websocket.config;
 
-import com.example.websockets.entity.User;
+import com.example.websocket.entity.User;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;

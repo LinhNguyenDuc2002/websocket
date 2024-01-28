@@ -1,4 +1,4 @@
-package com.example.websockets.util;
+package com.example.websocket.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
