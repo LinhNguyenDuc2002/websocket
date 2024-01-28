@@ -1,12 +1,10 @@
-package com.example.websockets.entity;
+package com.example.websocket.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 
-import java.security.Principal;
 import java.util.Date;
 
 @Data

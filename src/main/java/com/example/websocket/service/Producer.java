@@ -1,6 +1,6 @@
-package com.example.websockets.service;
+package com.example.websocket.service;
 
-import com.example.websockets.entity.Message;
+import com.example.websocket.entity.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
