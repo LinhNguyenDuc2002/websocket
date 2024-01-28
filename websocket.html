@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Chat WebSocket</title>
+        <!-- https://cdnjs.com/libraries/sockjs-client -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+        <!-- https://cdnjs.com/libraries/stomp.js/ -->
+        <script  src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+        <script type="text/javascript">
+            var stompClient = null;
+            var username = null;
+
+            function connect() {
+                var username = document.getElementById('name').value;
+
+                var socket = new SockJS('http://localhost:8080/api/v1/ws');
+                stompClient = Stomp.over(socket);
+
+                stompClient.connect({username: username}, function() {
+                    stompClient.subscribe("/topic/message", onMessageReceived)
+                });
+            }
+
+            function disconnect() {
+                if(stompClient != null) {
+                    stompClient.disconnect();
+                }
+
+                console.log("Disconnected");
+            }
+
+            function onMessageReceived(payload) {
+                console.log("Message: " + payload.body);
+            }   
+            
+            function sendUsingSendTo() {
+                var message = document.getElementById('public-text').value;
+                var username = document.getElementById('name').value;
+
+                if(stompClient) {
+                    var chatMessage = {
+                        date: new Date(),
+                        sender: username,
+                        message: message
+                    };
+
+                    stompClient.send("/app/send-to/public", {}, JSON.stringify(chatMessage));
+                }
+                event.preventDefault();
+            }
+
+            function sendUsingConvertAndSend() {
+                var message = document.getElementById('convert-and-send').value;
+                var username = document.getElementById('name').value;
+
+                if(stompClient) {
+                    var chatMessage = {
+                        date: new Date(),
+                        sender: username,
+                        message: message
+                    };
+
+                    fetch('http://localhost:8080/api/v1/send/message', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(chatMessage),
+                    })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error('Error:', error));
+                }
+                event.preventDefault();
+            }
+
+            function sendPrivateMessage() {
+                stompClient.subscribe("/users/topic/private", onMessageReceived);
+
+                var message = document.getElementById('private-text').value;
+                var username = document.getElementById('name').value;
+                var receiver = document.getElementById('receiver').value;
+
+                if(stompClient) {
+                    var chatMessage = {
+                        date: new Date(),
+                        sender: username,
+                        message: message,
+                        receiver: receiver
+                    };
+
+                    //stompClient.send(destination address, header, message)
+                    stompClient.send("/app/send-private/private", {}, JSON.stringify(chatMessage));
+                }
+                event.preventDefault();
+            }
+        </script>
+    </head>
+
+    <body style="display: flex; align-items: center; justify-content: center;">
+        <div>
+            <div>
+                <input type="text" id="name" placeholder="Enter your name"/>
+            </div><br />
+
+            <div>
+                <button id="connect" onclick="connect()">Connect</button>
+
+                <button id="disconnect" onclick="disconnect()">Disconnect</button>
+            </div><br />
+
+            <div id="conversationDiv" style="margin-bottom: 30px;">
+                <input type="text" id="public-text" placeholder="Write a message..."/>
+
+                <button id="sendMessage" onclick="sendUsingSendTo()">@SendTo</button>
+            </div>
+
+            <div id="conversationDiv" style="margin-bottom: 30px;">
+                <input type="text" id="convert-and-send" placeholder="Write a message..."/>
+
+                <button id="sendMessage" onclick="sendUsingConvertAndSend()">convertAndSend()</button>
+            </div>
+
+            <div id="conversationDiv">
+                <input type="text" id="receiver" placeholder="Enter receiver name"/>
+                <input type="text" id="private-text" placeholder="Write a message..."/>
+
+                <button id="sendMessage" onclick="sendPrivateMessage()">Send Private</button>
+            </div>
+        </div>
+
+    </body>
+</html>
