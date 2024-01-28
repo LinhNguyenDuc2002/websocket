@@ -1,17 +1,16 @@
-package com.example.websocket.entity;
+package com.example.websocket.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.security.Principal;
 
-@Data
 @AllArgsConstructor
-public class User implements Principal {
-    private String username;
-
+@Data
+public class StompPrincipal implements Principal {
+    private String id;
     @Override
     public String getName() {
-        return username;
+        return id;
     }
 }

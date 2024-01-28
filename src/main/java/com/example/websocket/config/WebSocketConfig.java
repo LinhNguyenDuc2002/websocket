@@ -33,30 +33,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 //        registry.addEndpoint("/ws").setAllowedOrigins("http://127.0.0.1:5500").withSockJS();
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
-//        registry.addEndpoint("/ws")
-//                .setAllowedOriginPatterns("*")
-//                .setHandshakeHandler(new DefaultHandshakeHandler() {
-//                    public boolean beforeHandshake(
-//                            ServerHttpRequest request,
-//                            ServerHttpResponse response,
-//                            WebSocketHandler wsHandler,
-//                            Map attributes) throws Exception {
-//
-//                        if (request instanceof ServletServerHttpRequest) {
-//                            ServletServerHttpRequest servletRequest
-//                                    = (ServletServerHttpRequest) request;
-//                            HttpSession session = servletRequest
-//                                    .getServletRequest().getSession();
-//                            attributes.put("sessionId", session.getId());
-//                        }
-//                        return true;
-//                    }})
-//                .withSockJS();
+        registry.addEndpoint("/ws")
+                .setAllowedOriginPatterns("*")
+                .setHandshakeHandler(new CustomHandshakeHandler())
+                .withSockJS();
     }
-
-//    @Override
-//    public void configureClientInboundChannel(ChannelRegistration registration) {
-//        registration.interceptors(new UserInterceptor());
-//    }
 }

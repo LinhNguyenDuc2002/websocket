@@ -95,6 +95,26 @@
 
                 event.preventDefault();
             }
+
+            function sendUsingConvertAndSendToUser() {  
+                var message = document.getElementById('private-text-convert').value;
+                var username = document.getElementById('name').value;
+                var receiver = document.getElementById('receiver-convert').value;
+
+                if(stompClient) {
+                    var chatMessage = {
+                        date: new Date(),
+                        sender: username,
+                        message: message,
+                        receiver: receiver
+                    };
+
+                    //stompClient.send(destination address, header, message)
+                    stompClient.send("/app/send-private", {}, JSON.stringify(chatMessage));
+                }
+
+                event.preventDefault();
+            }
         </script>
     </head>
 
@@ -127,6 +147,13 @@
                 <input type="text" id="private-text" placeholder="Write a message..."/>
 
                 <button id="sendMessage" onclick="sendUsingSendToUser()">@SendToUser</button>
+            </div>
+
+            <div id="conversationDiv">
+                <input type="text" id="receiver-convert" placeholder="Enter receiver name"/>
+                <input type="text" id="private-text-convert" placeholder="Write a message..."/>
+
+                <button id="sendMessage" onclick="sendUsingConvertAndSendToUser()">convertAndSendToUser()</button>
             </div>
         </div>
 

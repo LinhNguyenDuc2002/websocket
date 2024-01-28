@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+
 @RestController
 @CrossOrigin(originPatterns = "*") //when using @RequestMapping, @GetMapping, @PostMapping, ...
 public class WebSocketController {
@@ -43,10 +45,10 @@ public class WebSocketController {
         return "[" + DateUtil.formatDate(message.getDate()) + "]: " + message.getSender() + " - " + message.getMessage();
     }
 
-//    @MessageMapping("/send-private/{topic}")
-//    @SendToUser("/queue/messages")
-//    public String sendPrivateMessage(@PathVariable String topic, @Payload Message message){
-//        producer.sendPrivateMessageTo(message.getReceiver(), topic, message);
-//        return "[" + DateUtil.formatDate(message.getDate()) + "]: " + message.getSender() + " - " + message.getMessage();
-//    }
+    @MessageMapping("/send-private")
+    public String sendPrivateMessage(@Payload Message message, Principal principal){
+        producer.addClient(principal.getName());
+        producer.sendPrivateMessageTo(message);
+        return "[" + DateUtil.formatDate(message.getDate()) + "]: " + message.getSender() + " - " + message.getMessage();
+    }
 }

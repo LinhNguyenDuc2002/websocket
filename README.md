@@ -1,5 +1,7 @@
 # **DEMO WEBSOCKET WITH SPRING**
 
+![img_1.png](img_1.png)
+
 ![img.png](img.png)
 
 WebSockets is a new way of communication, and it’s replacing the client/server web technology.
