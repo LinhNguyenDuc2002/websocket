@@ -95,4 +95,6 @@ https://viblo.asia/p/co-ban-ve-giao-thuc-websocket-va-thu-vien-socketio-63vKjmmM
 
 https://www.baeldung.com/spring-websockets-sendtouser
 
+https://mokkapps.de/blog/sending-message-to-specific-anonymous-user-on-spring-websocket
+
 
