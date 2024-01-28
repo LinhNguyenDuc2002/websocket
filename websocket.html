@@ -18,7 +18,8 @@
                 stompClient = Stomp.over(socket);
 
                 stompClient.connect({username: username}, function() {
-                    stompClient.subscribe("/topic/message", onMessageReceived)
+                    stompClient.subscribe("/topic/message", onMessageReceived); //subscribe public
+                    stompClient.subscribe("/users/queue/message", onMessageReceived); //subcribe private
                 });
             }
 
@@ -45,7 +46,7 @@
                         message: message
                     };
 
-                    stompClient.send("/app/send-to/public", {}, JSON.stringify(chatMessage));
+                    stompClient.send("/app/send-to", {}, JSON.stringify(chatMessage));
                 }
                 event.preventDefault();
             }
@@ -75,9 +76,7 @@
                 event.preventDefault();
             }
 
-            function sendPrivateMessage() {
-                stompClient.subscribe("/users/topic/private", onMessageReceived);
-
+            function sendUsingSendToUser() {  
                 var message = document.getElementById('private-text').value;
                 var username = document.getElementById('name').value;
                 var receiver = document.getElementById('receiver').value;
@@ -91,8 +90,9 @@
                     };
 
                     //stompClient.send(destination address, header, message)
-                    stompClient.send("/app/send-private/private", {}, JSON.stringify(chatMessage));
+                    stompClient.send("/app/send-to-user", {}, JSON.stringify(chatMessage));
                 }
+
                 event.preventDefault();
             }
         </script>
@@ -126,7 +126,7 @@
                 <input type="text" id="receiver" placeholder="Enter receiver name"/>
                 <input type="text" id="private-text" placeholder="Write a message..."/>
 
-                <button id="sendMessage" onclick="sendPrivateMessage()">Send Private</button>
+                <button id="sendMessage" onclick="sendUsingSendToUser()">@SendToUser</button>
             </div>
         </div>
 

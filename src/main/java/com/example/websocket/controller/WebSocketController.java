@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,13 +22,12 @@ public class WebSocketController {
 
     /**
      * Nếu không sử dụng @SendTo thì sử dụng SimpMessagingTemplate giống như function ở dưới
-     * @param topic
      * @param message
      * @return
      */
-    @MessageMapping("/send-to/{topic}") //maybe use @RequestMapping
+    @MessageMapping("/send-to") //maybe use @RequestMapping
     @SendTo("/topic/message") //message is sent to /topic/message and then sent to client subscribing the topic
-    public String sendToPublicMessage(@PathVariable String topic, @Payload Message message){
+    public String sendToPublicMessage(@Payload Message message){
         return "[" + DateUtil.formatDate(message.getDate()) + "]: " + message.getSender() + " - " + message.getMessage();
     }
 
@@ -37,9 +37,16 @@ public class WebSocketController {
         return "[" + DateUtil.formatDate(message.getDate()) + "]: " + message.getSender() + " - " + message.getMessage();
     }
 
-    @MessageMapping("/send-private/{topic}")
-    public String sendPrivateMessage(@PathVariable String topic, @Payload Message message){
-        producer.sendPrivateMessageTo(message.getReceiver(), topic, message);
+    @MessageMapping("/send-to-user")
+    @SendToUser("/queue/message")
+    public String sendToPrivateMessage(@Payload Message message){
         return "[" + DateUtil.formatDate(message.getDate()) + "]: " + message.getSender() + " - " + message.getMessage();
     }
+
+//    @MessageMapping("/send-private/{topic}")
+//    @SendToUser("/queue/messages")
+//    public String sendPrivateMessage(@PathVariable String topic, @Payload Message message){
+//        producer.sendPrivateMessageTo(message.getReceiver(), topic, message);
+//        return "[" + DateUtil.formatDate(message.getDate()) + "]: " + message.getSender() + " - " + message.getMessage();
+//    }
 }
